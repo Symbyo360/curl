@@ -1520,3 +1520,11 @@ if(NOT TARGET uninstall)
       COMMAND ${CMAKE_COMMAND} -P
       ${CMAKE_CURRENT_BINARY_DIR}/CMake/cmake_uninstall.cmake)
 endif()
+
+add_custom_target(copy_curl_cert
+COMMAND ${CMAKE_COMMAND} -E copy
+  ${CMAKE_CURRENT_SOURCE_DIR}/cacert-2020-07-22.pem
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/cacert.pem
+)
+add_dependencies(libcurl copy_curl_cert)
+set_target_properties(copy_curl_cert PROPERTIES FOLDER Deployment)
