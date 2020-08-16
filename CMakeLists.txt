@@ -47,7 +47,7 @@ include(CheckCCompilerFlag)
 
 project(CURL C)
 
-message(WARNING "the curl cmake build system is poorly maintained. Be aware")
+# message(WARNING "the curl cmake build system is poorly maintained. Be aware")
 
 file(STRINGS ${CURL_SOURCE_DIR}/include/curl/curlver.h CURL_VERSION_H_CONTENTS REGEX "#define LIBCURL_VERSION( |_NUM )")
 string(REGEX MATCH "#define LIBCURL_VERSION \"[^\"]*"
@@ -213,7 +213,7 @@ if(ENABLE_IPV6 AND NOT WIN32)
   endif()
 endif()
 
-curl_nroff_check()
+# curl_nroff_check()
 find_package(Perl)
 
 cmake_dependent_option(ENABLE_MANUAL "to provide the built-in manual"
@@ -362,7 +362,7 @@ if(CMAKE_USE_SECTRANSP)
 endif()
 
 if(CMAKE_USE_OPENSSL)
-  find_package(OpenSSL REQUIRED)
+  # find_package(OpenSSL REQUIRED)
   set(SSL_ENABLED ON)
   set(USE_OPENSSL ON)
 
@@ -370,7 +370,7 @@ if(CMAKE_USE_OPENSSL)
   # version of CMake.  This allows our dependents to get our dependencies
   # transitively.
   if(NOT CMAKE_VERSION VERSION_LESS 3.4)
-    list(APPEND CURL_LIBS OpenSSL::SSL OpenSSL::Crypto)
+    list(APPEND CURL_LIBS Libressl::ssl Libressl::crypto)
   else()
     list(APPEND CURL_LIBS ${OPENSSL_LIBRARIES})
     include_directories(${OPENSSL_INCLUDE_DIR})
@@ -597,10 +597,10 @@ if(NOT CURL_DISABLE_LDAPS)
 endif()
 
 # Check for idn
-check_library_exists_concat("idn2" idn2_lookup_ul HAVE_LIBIDN2)
+# check_library_exists_concat("idn2" idn2_lookup_ul HAVE_LIBIDN2)
 
 # Check for symbol dlopen (same as HAVE_LIBDL)
-check_library_exists("${CURL_LIBS}" dlopen "" HAVE_DLOPEN)
+# check_library_exists("${CURL_LIBS}" dlopen "" HAVE_DLOPEN)
 
 option(CURL_ZLIB "Set to ON to enable building curl with zlib support." ON)
 set(HAVE_LIBZ OFF)
@@ -1421,11 +1421,11 @@ foreach(_lib ${CMAKE_C_IMPLICIT_LINK_LIBRARIES} ${CURL_LIBS})
       # this information in the .pc file.
       continue()
     endif()
-    get_target_property(_lib "${_libname}" LOCATION)
-    if(NOT _lib)
-      message(WARNING "Bad lib in library list: ${_libname}")
-      continue()
-    endif()
+    # get_target_property(_lib "${_libname}" LOCATION)
+    # if(NOT _lib)
+    #   message(WARNING "Bad lib in library list: ${_libname}")
+    #   continue()
+    # endif()
   endif()
   if(_lib MATCHES ".*/.*" OR _lib MATCHES "^-")
     set(LIBCURL_LIBS          "${LIBCURL_LIBS} ${_lib}")
@@ -1457,23 +1457,23 @@ set(VERSIONNUM              "${CURL_VERSION_NUM}")
 # * ENABLE_STATIC
 configure_file("${CURL_SOURCE_DIR}/curl-config.in"
                "${CURL_BINARY_DIR}/curl-config" @ONLY)
-install(FILES "${CURL_BINARY_DIR}/curl-config"
-        DESTINATION ${CMAKE_INSTALL_BINDIR}
-        PERMISSIONS
-          OWNER_READ OWNER_WRITE OWNER_EXECUTE
-          GROUP_READ GROUP_EXECUTE
-          WORLD_READ WORLD_EXECUTE)
+# install(FILES "${CURL_BINARY_DIR}/curl-config"
+#         DESTINATION ${CMAKE_INSTALL_BINDIR}
+#         PERMISSIONS
+#           OWNER_READ OWNER_WRITE OWNER_EXECUTE
+#           GROUP_READ GROUP_EXECUTE
+#           WORLD_READ WORLD_EXECUTE)
 
 # Finally generate a pkg-config file matching this config
 configure_file("${CURL_SOURCE_DIR}/libcurl.pc.in"
                "${CURL_BINARY_DIR}/libcurl.pc" @ONLY)
-install(FILES "${CURL_BINARY_DIR}/libcurl.pc"
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+# install(FILES "${CURL_BINARY_DIR}/libcurl.pc"
+#         DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 
 # install headers
-install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/curl"
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-    FILES_MATCHING PATTERN "*.h")
+# install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/curl"
+#     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+#     FILES_MATCHING PATTERN "*.h")
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
@@ -1490,16 +1490,16 @@ configure_package_config_file(CMake/curl-config.cmake.in
         INSTALL_DESTINATION ${CURL_INSTALL_CMAKE_DIR}
 )
 
-install(
-        EXPORT "${TARGETS_EXPORT_NAME}"
-        NAMESPACE "${PROJECT_NAME}::"
-        DESTINATION ${CURL_INSTALL_CMAKE_DIR}
-)
+# install(
+#         EXPORT "${TARGETS_EXPORT_NAME}"
+#         NAMESPACE "${PROJECT_NAME}::"
+#         DESTINATION ${CURL_INSTALL_CMAKE_DIR}
+# )
 
-install(
-        FILES ${version_config} ${project_config}
-        DESTINATION ${CURL_INSTALL_CMAKE_DIR}
-)
+# install(
+#         FILES ${version_config} ${project_config}
+#         DESTINATION ${CURL_INSTALL_CMAKE_DIR}
+# )
 
 # Workaround for MSVS10 to avoid the Dialog Hell
 # FIXME: This could be removed with future version of CMake.
